@@ -33,10 +33,12 @@ export function createApp(): express.Express {
     })
   );
   app.use(compression());
+
+  // ✅ FIXED pino-http (removed custom logger)
   app.use(
     pinoHttp({
-      logger,
-      genReqId: (req) => (req as express.Request & { ctx?: { requestId: string } }).ctx?.requestId ?? '',
+      genReqId: (req) =>
+        (req as express.Request & { ctx?: { requestId: string } }).ctx?.requestId ?? '',
       customProps: (req) => ({
         requestId: (req as express.Request & { ctx?: { requestId: string } }).ctx?.requestId,
       }),
@@ -48,6 +50,7 @@ export function createApp(): express.Express {
       },
     })
   );
+
   app.use(httpMetrics);
 
   app.use(
